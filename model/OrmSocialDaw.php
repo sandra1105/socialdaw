@@ -14,8 +14,23 @@ class OrmSocialDaw{
         foreach( $array as $post) {
             $post->num_comentarios = $this->numerocomentario($post->id);
             $post->num_like = $this->numerolike($post->id);
+            if(isset($_SESSION["login"])) {
+                $post->like = $this->tienelike($post->id,$_SESSION["login"]);
+            }
         }
         return $array;
+    }
+    function tienelike($id,$login) {
+        $conn=Klasto::getInstance();
+        $params = [$id,$login];
+        $select = "select count(*) as 'like' from `like` where post_id = ? AND usuario_login = ?";
+        //importante recuerdalo inutil
+        $valor = $conn->queryOne($select,$params)["like"];
+        if($valor > 0) {
+            return true;
+        }else {
+            return false;
+        }
     }
     function quitaroponerlike($id,$login) {
         $conn = Klasto::getInstance();
@@ -35,7 +50,7 @@ class OrmSocialDaw{
     function numerolike($id) {
         $conn=Klasto::getInstance();
         $params = [$id];
-        $select = "select count(*) as 'num_like' from like where post_id = ?";
+        $select = "select count(*) as 'num_like' from `like` where post_id = ?";
         //importante recuerdalo inutil
         return $conn->queryOne($select,$params)["num_like"];
     }

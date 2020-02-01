@@ -32,8 +32,13 @@
 					<h4><?=$valor->resumen?></h4>
 					<p><?=$valor->texto?></p>
 					<?php if(isset($_SESSION["login"])){ ?>
-						<a href="javascript:void(0)" onclick="evento(<?= $post->id ?>)" id="<?=$valor->id?>"><i class="fa fa-heart"></i></a>
-						<span><?= $valor->num_like?></span>
+						<a href="javascript:void(0)" onclick="evento(<?= $valor->id ?>)"><i id="<?=$valor->id?>" 
+						<?php if($valor->like) { ?>
+							class="fa fa-heart text-danger"
+						<?php }else { ?>
+							class="fa fa-heart"
+							<?php }?>></i></a>
+						<span id="numerolike<?= $valor->id ?>"><?= $valor->num_like?></span>
 						<a href="<?=$URL_PATH?>/masinformacion/<?=$valor->id?>"><i class="fa fa-comments"></i></a><?= $valor->num_comentarios ?>
 					<?php }?>
 					<a class="btn btn-primary"role="button" href="<?=$URL_PATH?>/masinformacion/<?=$valor->id?>">Leer mas</a> 
@@ -55,5 +60,6 @@
         <?php if(isset($_SESSION['login'])) { ?>
 <div><h1 id="icono"><a class="nuevopost" href="<?=$URL_PATH?>/anadir">+</a></h1></div>
 	<?php	}?>
+	<script src="<?= $URL_PATH ?>/js/like.js"></script>
 <?php Ti::endBlock()?>
 <?php Ti::endExtend()?>
