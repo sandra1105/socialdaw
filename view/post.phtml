@@ -1,0 +1,73 @@
+<?php use dawfony\Ti;?>
+<?php Ti::extend("view/MainView.phtml"); ?>
+<?php Ti::startBlock("estilo")?>
+.cuadradro{
+    border:1px solid black;
+	border-radius: 10px;
+    margin:10px;
+}
+.comentarios {
+    margin-left:40%;
+}
+<?php Ti::endBlock()?>
+<?php Ti::startBlock("contenido");?>
+<div class="container-fluid cuadradro">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="row">
+				<div class="col-md-3">
+                    <img src="<?=$URL_PATH?>/assets/img/<?=$post->foto?>">
+				</div>
+				<div class="col-md-7">
+					<h4><?=$post->resumen?></h4> 
+					<p><?=$post->texto?></p>
+				</div>
+				<div class="col-md-2">
+				<?php if(($_SESSION["login"] ?? " ") == $post->usuario_login){ ?>
+					<p>Por:<?=$post->usuario_login?></p>
+					<?php }else { ?>
+					<p>Por:<a href="<?=$URL_PATH?>/informacionpersonalalguien/<?=$post->usuario_login?>"><?=$post->usuario_login?></a></p>
+					<?php } ?>
+                   <p><?=$post->fecha?></p>
+                   <p><?=$post->descripcion?></p>
+				</div>
+            </div>
+		</div>
+	</div>
+</div>
+
+<?php global $URL_PATH;?>
+<form action="<?=$URL_PATH?>/annadircomentario/<?=$valor?>" method="post">
+<div class="form-group">
+    <label for="comentario">Añadir comentario</label>
+    <input type="text" class="form-control" id="comentario" name="comentario">
+  </div>
+<button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+
+<div class="comentarios">
+    <dt><p>Comentarios:</p></dt>
+</div>
+
+<?php foreach ($comentarios as $valor) {?>
+<div class="container-fluid cuadradro">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="row">
+				<div class="col-md-3">
+                    <p><?=$valor->usuario_login?></p>
+				</div>
+				<div class="col-md-6">
+					<p><?=$valor->texto?></p>
+				</div>
+				<div class="col-md-3">
+                   <p><?=$valor->fecha?></p>
+				</div>
+            </div>
+		</div>
+	</div>
+</div>
+<?php }?>
+<?php Ti::endBlock();?>
+<?php Ti::endExtend();?>

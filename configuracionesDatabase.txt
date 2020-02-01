@@ -1,0 +1,19 @@
+categoria_post
+0 Anime
+1 Kpop
+2 Jpop
+
+rol
+0 Usuario registrado
+1 administrador
+
+
+
+insert into categoria_post (id, descripcion) values (0, 'Anime');
+insert into categoria_post (id, descripcion) values (1, 'Kpop');
+insert into categoria_post (id, descripcion) values (2, 'Jpop');
+
+insert into rol (id, descripcion) values (0, 'usuario');
+insert into rol (id, descripcion) values (1, 'administrador');
+
+insert into usuario (login, password, rol_id, nombre, email) values ('admin', '$2y$10$h2WtUD28HEEIRZo9tcbfkeUdQhLvzjOZDd3Yr5..SdvF1Wh6DPv2K', 1, 'admin', 'admin@admin.com')

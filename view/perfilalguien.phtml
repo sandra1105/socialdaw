@@ -1,0 +1,45 @@
+<?php use dawfony\Ti;?>
+<?php Ti::extend("view/MainView.phtml")?>
+<?php Ti::startBlock("estilo")?>
+.cuadradro{
+	border:1px solid black;
+    border-radius: 10px;
+}
+#seguir {
+    margin-left:80%;
+}
+<?php Ti::endBlock()?>
+<?php Ti::startBlock("contenido")?>
+<?php global $URL_PATH;?>
+<div>
+    <dl>
+    <dt><p class="linea">Nombre : <?=$login?></p></dt>
+    <dt><p class="linea">Sigue: <?=$numeropersonassigue["numero"]?></p></dt>
+    <dt><p class="linea">Le siguen: <?=$numeroseguidores["numero"]?></p></dt>
+    <?php if(isset($_SESSION["login"])) { ?>
+        <?php if($respuesta) { ?>
+                <dt><a href="<?=$URL_PATH?>/dejardeseguir/<?=$login?>" id ="seguir" class="btn btn-primary linea"role="button">Dejar de seguir</a></dt>
+            <?php }else { ?>
+                <dt><a href="<?=$URL_PATH?>/seguir/<?=$login?>" id ="seguir" class="btn btn-primary linea"role="button">Seguir</a></dt>
+        <?php } ?>
+    <?php } ?>
+    </dl>
+</div>
+<?php foreach ($postpersona as $valor) {?>
+<div class="container-fluid cuadradro">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="row">
+				<div class="col-md-10">
+                    <a href="<?=$URL_PATH?>/masinformacion/<?=$valor->id?>"><?=$valor->resumen?></a>
+				</div>
+				<div class="col-md-2">
+                   <p><?=$valor->fecha?></p>
+				</div>
+            </div>
+		</div>
+	</div>
+</div>
+<?php }?>
+<?php Ti::endBlock()?>
+<?php Ti::endExtend()?>

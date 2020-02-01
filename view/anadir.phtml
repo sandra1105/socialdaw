@@ -1,0 +1,29 @@
+<?php use dawfony\Ti;?>
+<?php Ti::extend("view/MainView.phtml")?>
+<?php Ti::startBlock("contenido")?>
+<?php global $URL_PATH;?>
+<p><?=$login ?? ""?></p>
+<form method="post" action="<?=$URL_PATH?>/anadir" enctype="multipart/form-data">
+  <div class="form-group">
+    <label for="resumen">resumen</label>
+    <input type="text" class="form-control" id="resumen" name="resumen" value ="<?=$resumen ?? ""?>">
+  </div>
+  
+  <div class="form-group">
+    <label for="texto">texto</label>
+    <input type="text" class="form-control" id="texto" name="texto" value="<?=$texto ?? ""?>">
+  </div>
+  <div class="form-group">
+    <label for="foto">Fichero</label>
+    <input type="file" class="form-control-file" id="filefoto" name="foto" pattern=".*\.(jpg|jpeg|gif|png|webp|svg)" required>
+  </div>
+  <select name="desplegable" id="desplegable" class="form-control" >
+      <option value="0">Anime</option>
+      <option value="1">Kpop</option>
+      <option value="2">Jpop</option>
+  </select>
+  <br>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+<?php Ti::endBlock()?>
+<?php Ti::endExtend()?>
