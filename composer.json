@@ -4,12 +4,12 @@
     "require": {
         "noahbuscher/macaw": "dev-master",
         "victorjfg/dawfony": "dev-master",
-        "twbs/bootstrap": "dev-master"
+        "twbs/bootstrap": "4.4.1",
+        "ezyang/htmlpurifier": "dev-master"
     },
     "authors": [
         {
-            "name": "vjfernandez",
-            "email": "victor.fernandezgil@educa.madrid.org"
+            "name": "tu nombre"
         }
     ],
     "minimum-stability": "dev"

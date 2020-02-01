@@ -13,6 +13,7 @@ class OrmSocialDaw{
         $array = $conn->query($select,$params,"model\post");
         foreach( $array as $post) {
             $post->num_comentarios = $this->numerocomentario($post->id);
+            $post->num_like = $this->numerolike($post->id);
         }
         return $array;
     }
@@ -31,10 +32,12 @@ class OrmSocialDaw{
         );
         return true; // Sí tiene like
     }
-    function obtenernumerolike($id) {
-        $conn = Klasto::getInstance();
+    function numerolike($id) {
+        $conn=Klasto::getInstance();
         $params = [$id];
-        return $conn->query("Select count(*) as 'numero' FROM like WHERE post_id = ? ",$params)["numero"];
+        $select = "select count(*) as 'num_like' from like where post_id = ?";
+        //importante recuerdalo inutil
+        return $conn->queryOne($select,$params)["num_like"];
     }
     function numerocomentario($id) {
         $conn=Klasto::getInstance();

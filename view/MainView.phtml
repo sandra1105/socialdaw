@@ -11,8 +11,12 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="<?= $URL_PATH ?>/js/main.js"></script>
+    <script>var URL_PATH = "<?= $URL_PATH ?>" // Pasamos el URL_PATH de php a Javascript.
+    </script>
+    <script src="<?= $URL_PATH ?>/js/like.js"></script>
     <?php Ti::startBlock("title")?>
-        <title><?=$data["title"]?></title>
+        <title><?=$title?></title>
     <?php Ti::endBlock()?>
     <style>
       body{
@@ -41,35 +45,37 @@
         <p class="lead">Tu red social de anime, Kpop y jpop</p>
         <hr class="my-4">
     </div>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-info sticky-top myfont">
+    <a class="navbar-brand" href="<?= $URL_PATH ?>/">Lo último</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
         <?php 
          if(isset($_SESSION['login'])) { ?>
-           <a class="nav-link" href="<?=$URL_PATH?>">Lo ultimo <span class="sr-only">(current)</span></a>
-           </li>
-           <li class="nav-item active">
+           <li class="nav-item">
              <a class="nav-link" href="<?=$URL_PATH?>/perfil">Mi perfil <span class="sr-only">(current)</span></a>
            </li>
-           <li class="nav-item active">
+           <li class="nav-item">
              <a class="nav-link" href="<?=$URL_PATH?>/seguidores">Mis seguidores <span class="sr-only">(current)</span></a>
            </li>
-           <a href="<?=$URL_PATH?>/borrar" id ="borrar" class="btn btn-primary"role="button">Cerrar session</a> 
+           <li class="nav-item">
+           <a href="javascript:void(0)" onclick="cerrarsesion()" id ="borrar" class="btn btn-primary" role="button">Cerrar session</a>
+           </li> 
         <?php }else { ?>
-        <a class="nav-link" href="<?=$URL_PATH?>">Lo ultimo <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item active">
+
+      <li class="nav-item">
         <a class="nav-link" href="<?=$URL_PATH?>/registro">Registrate <span class="sr-only">(current)</span></a>
       </li>
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link" href="<?=$URL_PATH?>/login">Login <span class="sr-only">(current)</span></a>
       </li>
       <?php }
     ?>
     <form class="form-inline my-2 my-lg-0">
       <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Enviar</button>
+      <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Enviar</button>
     </form>
   </div>
   </nav>

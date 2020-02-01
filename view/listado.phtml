@@ -1,8 +1,8 @@
 <?php use dawfony\Ti;?>
 <?php Ti::extend("view/MainView.phtml")?>
+<?php Ti::startBlock("cabecera")?>
+<?php Ti::endBlock()?>
 <?php Ti::startBlock("estilo")?>
-<script>var URL_PATH = "<?=$URL_PATH?>"</script>
-<script src="like.js"></script>
 #icono{
 	margin-left:90%;
 }
@@ -31,9 +31,10 @@
 				<div class="col-md-6">
 					<h4><?=$valor->resumen?></h4>
 					<p><?=$valor->texto?></p>
-					<?php if($_SESSION["login"]){ ?>
-						<a href="#" class="boton" id="<?=$valor->id?>"><i class="fa fa-heart"></i><span></span></a>
-						<a href="<?=$URL_PATH?>/masinformacion/<?=$valor->id?>"><i class="fa fa-comments"></i><span></span></a><?= $valor->num_comentarios ?>
+					<?php if(isset($_SESSION["login"])){ ?>
+						<a href="javascript:void(0)" onclick="evento(<?= $post->id ?>)" id="<?=$valor->id?>"><i class="fa fa-heart"></i></a>
+						<span><?= $valor->num_like?></span>
+						<a href="<?=$URL_PATH?>/masinformacion/<?=$valor->id?>"><i class="fa fa-comments"></i></a><?= $valor->num_comentarios ?>
 					<?php }?>
 					<a class="btn btn-primary"role="button" href="<?=$URL_PATH?>/masinformacion/<?=$valor->id?>">Leer mas</a> 
 				</div>

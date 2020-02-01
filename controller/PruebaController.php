@@ -9,18 +9,19 @@ use model\post;
 class PruebaController extends Controller {
     public function listado() {
         $title = "listado";
-        //global $URL_PATH;
+        global $URL_PATH;
         $Orm = new OrmSocialDaw;
         $listado = $Orm -> listado();
         echo Ti::render("view/listado.phtml",compact('title','listado'));
     }
     function obtenerlike($id) {
+        //importante si no lo pones no se convierte el json
+        header('Content-type: application/json');
         if(isset($_SESSION["login"])) {
             $Orm = new OrmSocialDaw;
-            $lotiene = $Orm -> quitaroponerlike($id,$_SESSION["login"]);
-            $numerolike = $Orm -> obtenernumerolike($id);
-            $array["lotiene"] = $lotiene;
-            $array["numerolike"] = $numerolike;
+            $array["lotiene"] = $Orm -> quitaroponerlike($id,$_SESSION["login"]);
+            $array["numerolike"] = $Orm -> numerolike($id);
+            echo json_encode( $array );
         }
     }
     public function registro() {
