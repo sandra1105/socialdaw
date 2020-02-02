@@ -147,17 +147,19 @@ class PruebaController extends Controller {
             $post = new Post;
             $post ->fecha = date('Y-m-d H:i:s');
             $post->resumen = sanitizar($_REQUEST["resumen"]);
-            $post->texto = html_purify($_REQUEST["texto"]);
+            //$post->texto = html_purify($_REQUEST["texto"]);
+            $post->texto = sanitizar($_REQUEST["texto"]);
             $post->foto = $_FILES["foto"]["name"];
             $post->categoria_post_id = $_REQUEST["desplegable"];
             if(!($post->categoria_post_id == 0 || $post->categoria_post_id ==1 || $post->categoria_post_id == 2)) {
                 die("Esa categoria de post no es correcta");
             }
             $post->usuario_login = $_SESSION["login"];
+            var_dump($post);
             move_uploaded_file($_FILES["foto"]["tmp_name"], "assets/img/" . $post->foto);
             $Orm = new OrmSocialDaw;
             $Orm -> anadirpost($post);
-        header("Location: $URL_PATH");
+            header("Location: $URL_PATH");
         }
         }else {
             throw new Exception("Intento añadir sin estar logueado");
