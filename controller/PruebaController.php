@@ -146,15 +146,17 @@ class PruebaController extends Controller {
         if($_SESSION["rol"] == 0 || $_SESSION["rol"] == 1) {
             $post = new Post;
             $post ->fecha = date('Y-m-d H:i:s');
-            $post->resumen = $_REQUEST["resumen"];
-            $post->texto = $_REQUEST["texto"];
+            $post->resumen = sanitizar($_REQUEST["resumen"]);
+            $post->texto = html_purify($_REQUEST["texto"]);
             $post->foto = $_FILES["foto"]["name"];
             $post->categoria_post_id = $_REQUEST["desplegable"];
+            if(!($post->categoria_post_id == 0 || $post->categoria_post_id ==1 || $post->categoria_post_id == 2)) {
+                die("Esa categoria de post no es correcta");
+            }
             $post->usuario_login = $_SESSION["login"];
             move_uploaded_file($_FILES["foto"]["tmp_name"], "assets/img/" . $post->foto);
             $Orm = new OrmSocialDaw;
-            var_dump($post);
-            $columnasafectadas = $Orm -> anadirpost($post);
+            $Orm -> anadirpost($post);
         header("Location: $URL_PATH");
         }
         }else {

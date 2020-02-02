@@ -133,7 +133,7 @@ class OrmSocialDaw{
     function obtenercomentarios($id) {
         $conn=Klasto::getInstance();
         $params = [$id];
-        $select = "select usuario_login,fecha,texto from comenta where post_id = ?";
+        $select = "select usuario_login,fecha,texto from comenta where post_id = ? order by fecha desc";
         return $conn->query($select,$params,"model\comentario");
     }
     function obtenerpostpersona($login) {
