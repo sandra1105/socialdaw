@@ -3,16 +3,21 @@ namespace controller;
 
 use dawfony\Klasto;
 use dawfony\Ti;
+use Exception;
 use model\OrmSocialDaw;
 use model\post;
+require("funciones.php");
 
 class PruebaController extends Controller {
-    public function listado() {
+    public function listado($pagina = 1) {
         $title = "listado";
         global $URL_PATH;
+        global $config;
         $Orm = new OrmSocialDaw;
-        $listado = $Orm -> listado();
-        echo Ti::render("view/listado.phtml",compact('title','listado'));
+        $listado = $Orm -> listado($pagina);
+        $cuenta = $Orm ->contarUltimosPosts();
+        $numpaginas = ceil($cuenta / $config["post_per_page"]);
+        echo Ti::render("view/listado.phtml",compact('title','listado','pagina','numpaginas'));
     }
     function obtenerlike($id) {
         //importante si no lo pones no se convierte el json
@@ -21,7 +26,10 @@ class PruebaController extends Controller {
             $Orm = new OrmSocialDaw;
             $array["lotiene"] = $Orm -> quitaroponerlike($id,$_SESSION["login"]);
             $array["numerolike"] = $Orm -> numerolike($id);
-            echo json_encode( $array );
+            echo json_encode($array);
+        }else {
+            http_response_code(403);
+            die (json_encode(["msg"=>"No logueado"]));
         }
     }
     public function registro() {
@@ -30,28 +38,33 @@ class PruebaController extends Controller {
     }
     public function confirmacion() {
         $error = "";
-        $login = $_POST["login"] ?? "";
-        $password = $_POST["password"] ?? "";
-        $passwordos = $_POST["passwordos"] ?? "";
-        $nombre = $_POST["nombre"] ?? "";
-        $email = $_POST["email"] ?? "";
-        if($login == "" || $nombre == "" || $email == "" || $password != $passwordos) {
+        $login = sanitizar(strtolower($_POST["login"] ?? ""));
+        $password = sanitizar($_POST["password"] ?? "");
+        $passwordos = sanitizar($_POST["passwordos"] ?? "");
+        $nombre = sanitizar($_POST["nombre"] ?? "");
+        $email = sanitizar($_POST["email"] ?? "");
+        if($login == "" || $nombre == "" || $email == "") {
             $error = "campos vacios";
+            $title = "registro";
+            echo Ti::render("view/registro.phtml",compact('title','error','login','password','passwordos','nombre','email'));
+        }else if($password != $passwordos) {
+            $error = "contraseñas diferentes";
             $title = "registro";
             echo Ti::render("view/registro.phtml",compact('title','error','login','password','passwordos','nombre','email'));
         }else {
             $Orm = new OrmSocialDaw;
-            //$listado = $Orm -> existe($login,$password);
-            //if(!false) {
-                //$title = "registro";
-                //$error = "usuario ya existe";
-                //echo Ti::render("view/registro.phtml",compact('title','error','login','password','passwordos','nombre','email'));
-            //}else {
+            $existe = $Orm -> existe($login);
+            if($existe) {
+                $title = "registro";
+                $error = "usuario ya existe";
+                echo Ti::render("view/registro.phtml",compact('title','error','login','password','passwordos','nombre','email'));
+            }else {
                 $password= password_hash($password,PASSWORD_DEFAULT);
                 $Orm -> introducirusuario($login,$password,$nombre,$email);
                 $title = "login";
                 echo Ti::render("view/login.phtml",compact('title'));
             
+            }
         }
     }
 
@@ -63,8 +76,8 @@ class PruebaController extends Controller {
     //mirar
     public function confirmacionlogin() {
         global $URL_PATH;
-        $login = $_POST["login"] ?? "";
-        $password = $_POST["password"] ?? "";
+        $login =  strtolower(sanitizar($_REQUEST["login"]));
+        $password = $_REQUEST["password"];
         $error = "";
         $title = "login";
         if($login == "") {
@@ -113,13 +126,19 @@ class PruebaController extends Controller {
         $Orm = new OrmSocialDaw;
         $Orm -> annadircomentario($valor,$comentario,$_SESSION["login"]);
         header("Location: $URL_PATH/masinformacion/$valor");
+        }else {
+            throw new Exception("Intento añadir comentario sin estar logueado");
         }
     }
 
     
     function anadir() {
+        if(isset($_SESSION["login"])) {
         $title = "anadir";
         echo Ti::render("view/anadir.phtml",compact('title'));
+        }else {
+            throw new Exception("Intento añadir sin estar logueado");
+        }
     }
     public function confirmaranadir() {
         global $URL_PATH;
@@ -139,7 +158,7 @@ class PruebaController extends Controller {
         header("Location: $URL_PATH");
         }
         }else {
-            die("no estas logueado");
+            throw new Exception("Intento añadir sin estar logueado");
         }   
     }
 
@@ -150,6 +169,7 @@ class PruebaController extends Controller {
         $numeroseguidores = $Orm -> obtenerseguidores($login);
         $numeropersonassigue = $Orm -> obtenersiguiendo($login);
         $postpersona = $Orm -> obtenerpostpersona($login);
+        $respuesta = false;
         if(isset($_SESSION["login"])) {
             $losigues = $Orm -> losigues($login,$_SESSION["login"]);
             if($losigues == false) {
@@ -157,8 +177,6 @@ class PruebaController extends Controller {
             }else {
                 $respuesta = true;
             }
-        }else {
-            die("no estas logeado");
         }
         $title = "informacionpersonal";
         echo Ti::render("view/perfilalguien.phtml",compact('title','login','postpersona','numeroseguidores','numeropersonassigue','respuesta'));
@@ -172,6 +190,8 @@ class PruebaController extends Controller {
         $Orm = new OrmSocialDaw;
         $Orm -> seguir($_SESSION["login"],$loginpersona);
         header("Location: $URL_PATH/informacionpersonalalguien/$loginpersona");
+        }else {
+            throw new Exception("Intento seguir a alguien sin estar logueado");
         }
 
     }
@@ -183,7 +203,7 @@ class PruebaController extends Controller {
         $Orm -> eliminarseguidor($_SESSION["login"],$loginpersona);
         header("Location: $URL_PATH/informacionpersonalalguien/$loginpersona");
         }else {
-            die("no estas logeado");
+            throw new Exception("Intento dejar de seguir sin estar logueado");
         }
     }
 
@@ -198,18 +218,23 @@ class PruebaController extends Controller {
         $postpersona = $Orm -> obtenerpostpersona($loginpersonal);
         $title = "informacionpersonal";
         echo Ti::render("view/miperfil.phtml",compact('title','loginpersonal','postpersona','numeroseguidores','numeropersonassigue'));
+        }else {
+            throw new Exception("Intento ver el perfil sin estar logueado");
         }
     }
 
-    function seguidores() {
-        if($_SESSION["login"]) {
+    function seguidores($pagina = 1) {
+        if(isset($_SESSION["login"])) {
             $title = "listado";
-        //global $URL_PATH;
+            global $URL_PATH;
+            global $config;
             $Orm = new OrmSocialDaw;
-            $listado = $Orm -> listadoseguidores($_SESSION["login"]);
-            echo Ti::render("view/listadomisseguidores.phtml",compact('title','listado'));
+            $listado = $Orm -> listadoseguidores($_SESSION["login"],$pagina);
+            $cuenta = $Orm ->contarultimospostseguidores($_SESSION["login"]);
+            $numpaginas = ceil($cuenta / $config["post_per_page"]);
+            echo Ti::render("view/listadomisseguidores.phtml",compact('title','listado','pagina','numpaginas'));
         }else {
-            die("no estas logueado");
+            throw new Exception("Intento ver los seguidores sin estar logueado");
         }
     }
 }

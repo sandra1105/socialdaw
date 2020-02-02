@@ -5,11 +5,14 @@ use model\post;
 use model\usuario;
 use model\comentario;
 class OrmSocialDaw{
-    function listado() {
+    function listado($pagina = 1) {
         $conn=Klasto::getInstance();
-        $params = [];
+        global $config;
+        $limit = $config["post_per_page"];
+        $offset = ($pagina -1) * $limit;
+        $params = [$limit,$offset];
         $select = "select c.id,c.fecha,c.resumen,c.texto,foto,c.categoria_post_id,usuario_login,a.descripcion from post c,categoria_post a
-        where c.categoria_post_id=a.id order by fecha DESC";
+        where c.categoria_post_id=a.id order by fecha DESC LIMIT ? OFFSET ?";
         $array = $conn->query($select,$params,"model\post");
         foreach( $array as $post) {
             $post->num_comentarios = $this->numerocomentario($post->id);
@@ -50,6 +53,7 @@ class OrmSocialDaw{
     function numerolike($id) {
         $conn=Klasto::getInstance();
         $params = [$id];
+        //tienes que poner from like asi por que sino no te lo pilla.
         $select = "select count(*) as 'num_like' from `like` where post_id = ?";
         //importante recuerdalo inutil
         return $conn->queryOne($select,$params)["num_like"];
@@ -62,29 +66,48 @@ class OrmSocialDaw{
         return $conn->queryOne($select,$params)["num_comentarios"];
     }
     //esta mal revisar
-    function listadoseguidores($login) {
-        $conn=Klasto::getInstance();
-        $nombre = $this->numerocomentario($login);
-        $params = [$login];
-        $select = "select c.id,c.fecha,c.resumen,c.texto,foto,c.categoria_post_id,usuario_login,a.descripcion from post c,categoria_post a
-        where c.categoria_post_id=a.id order by fecha DESC";
-        $array = $conn->query($select,$params,"model\post");
+    function listadoseguidores($login,$page = 1) {
+        global $config;
+        $limit = $config["post_per_page"];
+        $offset = ($page -1) * $limit;
+        $array = Klasto::getInstance()->query(
+            "SELECT `id`, `fecha`, `resumen`, `texto`, `foto`, `categoria_post_id`, `usuario_login`"
+                . " FROM `post` JOIN `sigue` ON post.usuario_login = sigue.usuario_login_seguido"
+                . " WHERE sigue.usuario_login_seguidor = ?"
+                . " ORDER BY `fecha` DESC"
+                . " LIMIT $limit OFFSET $offset",
+            [$login],
+            "model\Post"
+        );
+        $categorias = $this->obtenerCategorias();
         foreach( $array as $post) {
             $post->num_comentarios = $this->numerocomentario($post->id);
+            $post->num_like = $this->numerolike($post->id);
+            $post->categoria = $categorias[$post->categoria_post_id]["descripcion"];
+            if(isset($_SESSION["login"])) {
+                $post->like = $this->tienelike($post->id,$_SESSION["login"]);
+            }
         }
         return $array;
+    }
+    public function obtenerCategorias()
+    {
+        return Klasto::getInstance()->query(
+            "SELECT id, descripcion"
+                . " FROM categoria_post"
+        );
     }
     function personassigo($login) {
         $conn=Klasto::getInstance();
         $params = [$login];
         $select = "select usuario_login_seguidor  from sigue where usuario_login_seguido = ? " ;
-        return $conn->query($select,$params,"model/usuario");
+        return $conn->query($select,$params,"model\usuario");
     }
 
-    function existe($login,$password) {
+    function existe($login) {
         $conn=Klasto::getInstance();
-        $params = [$login,$password];
-        $select = "select login,password,nombre from usuario where login=? and password=?";
+        $params = [$login];
+        $select = "SELECT login, password, nombre, email, rol_id from usuario WHERE login = ? ";
         return $conn->queryOne($select,$params,"model\usuario");
     }
     function introducirusuario($login,$password,$nombre,$email) {
@@ -132,13 +155,13 @@ class OrmSocialDaw{
     function obtenerseguidores($login) {
         $conn=Klasto::getInstance();
         $params = [$login];
-        $select = "select count(usuario_login_seguido) as numero from sigue where usuario_login_seguidor = ?";
+        $select = "select count(usuario_login_seguidor) as numero from sigue where usuario_login_seguido = ?";
         return $conn->queryOne($select,$params);
     }
     function obtenersiguiendo($login) {
         $conn=Klasto::getInstance();
         $params = [$login];
-        $select = "select count(usuario_login_seguidor) as numero from sigue where usuario_login_seguido = ? " ;
+        $select = "select count(usuario_login_seguido) as numero from sigue where usuario_login_seguidor = ? " ;
         return $conn->queryOne($select,$params);
     }
 
@@ -165,6 +188,17 @@ class OrmSocialDaw{
         $params = [$valor,$id,$comentario];
         $select = "insert into comenta(post_id,usuario_login,fecha,texto) values (?,?,NOW(),?)" ;
         return $conn->execute($select,$params);
+    }
+    function contarUltimosPosts() {
+        $conn=Klasto::getInstance();
+        $select = "select count(*) as 'numero' from post c,categoria_post a where c.categoria_post_id=a.id";
+        return $conn->queryOne($select)["numero"];
+    }
+    function contarultimospostseguidores($login) {
+        $conn=Klasto::getInstance();
+        $params = [$login];
+        $select= "select count(*) as 'numero' FROM `post` JOIN `sigue` ON post.usuario_login = sigue.usuario_login_seguido WHERE sigue.usuario_login_seguidor = ?";
+        return $conn->queryOne($select,$params)["numero"];
     }
     
 }
