@@ -8,7 +8,7 @@ use dawfony\KlastoException;
 
 //listado para pantalla principal
 Macaw::get($URL_PATH . "/","controller\PruebaController@listado");
-Macaw::get($URL_PATH . "/(:any)","controller\PruebaController@listado");
+Macaw::get($URL_PATH . "/pagina/(:any)","controller\PruebaController@listado");
 
 Macaw::get($URL_PATH . '/registro', "controller\PruebaController@registro");
 Macaw::post($URL_PATH . '/registro', "controller\PruebaController@confirmacion");
@@ -33,7 +33,7 @@ Macaw::get($URL_PATH . '/perfil', "controller\PruebaController@perfil");
 Macaw::post($URL_PATH . '/annadircomentario/(:any)', "controller\PruebaController@annadircomentario");
 
 Macaw::get($URL_PATH . '/seguidores', "controller\PruebaController@seguidores");
-Macaw::get($URL_PATH . '/seguidores/(:any)', "controller\PruebaController@seguidores");
+Macaw::get($URL_PATH . '/seguidores/pagina/(:any)', "controller\PruebaController@seguidores");
 
 Macaw::get($URL_PATH . '/obtenerlike/(:any)', "controller\PruebaController@obtenerlike");
 
