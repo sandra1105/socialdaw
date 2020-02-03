@@ -1,6 +1,7 @@
 <?php use dawfony\Ti;?>
 <?php Ti::extend("view/MainView.phtml"); ?>
 <?php Ti::startBlock("estilo")?>
+<?php global $URL_PATH;?>
 .cuadradro{
     border:1px solid black;
 	border-radius: 10px;
@@ -35,8 +36,6 @@
 		</div>
 	</div>
 </div>
-
-<?php global $URL_PATH;?>
 <form action="<?=$URL_PATH?>/annadircomentario/<?=$valor?>" method="post">
 <div class="form-group">
     <label for="comentario">Añadir comentario</label>

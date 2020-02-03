@@ -37,7 +37,7 @@ Macaw::get($URL_PATH . '/seguidores/(:any)', "controller\PruebaController@seguid
 
 Macaw::get($URL_PATH . '/obtenerlike/(:any)', "controller\PruebaController@obtenerlike");
 
-
+Macaw::get($URL_PATH . '/existeusuario/(:any)', "controller\PruebaController@existeusuario");
 
 // Captura de URL no definidas.
 Macaw::error(function() {

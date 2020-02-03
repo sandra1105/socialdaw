@@ -241,4 +241,17 @@ class PruebaController extends Controller {
             throw new Exception("Intento ver los seguidores sin estar logueado");
         }
     }
+
+    function existeusuario($nombre) {
+        header('Content-type: application/json');
+            $Orm = new OrmSocialDaw;
+            $existe = $Orm->existe($nombre);
+            if($existe) {
+                $array["respuesta"] = true;
+                echo json_encode($array); 
+            }else {
+                $array["respuesta"] = false;
+                echo json_encode($array); 
+            }
+    }
 }

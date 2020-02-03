@@ -1,11 +1,12 @@
 <?php use dawfony\Ti;?>
+<?php global $URL_PATH;?>
 <?php Ti::extend("view/MainView.phtml")?>
 <?php Ti::startBlock("contenido")?>
 <?php global $URL_PATH;?>
 <?php if($error != "") { ?>
-<span class="alert alert-danger" role="alert"><?=$error?></span> <br><br>
+<span class="alert alert-danger"  role="alert"><?=$error?></span><br><br>
 <?php } ?>
-<form method="post" action="<?=$URL_PATH?>/login">
+<form method="post" action="<?=$URL_PATH?>/login" ">
   <div class="form-group">
     <label for="login">Login</label>
     <input type="login" class="form-control" id="login" name="login" value ="<?=$login ?? ""?>">
