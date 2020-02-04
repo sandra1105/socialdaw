@@ -2,6 +2,7 @@
 <?php global $URL_PATH;?>
 <script src="<?= $URL_PATH ?>/js/comprobar.js"></script>
 <script src="<?= $URL_PATH ?>/js/comprobarnombre.js"></script>
+<script>var errornombre = false</script>
 <?php Ti::extend("view/MainView.phtml")?>
 <?php Ti::startBlock("contenido")?>
 <p style="color:red" id="error"><?=$error ?? ""?></p>

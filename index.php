@@ -5,7 +5,7 @@ session_start();
 use NoahBuscher\Macaw\Macaw;
 use controller\PruebaController;
 use dawfony\KlastoException;
-
+//servicion json de like,paginacion,sesiones
 //listado para pantalla principal
 Macaw::get($URL_PATH . "/","controller\PruebaController@listado");
 Macaw::get($URL_PATH . "/pagina/(:any)","controller\PruebaController@listado");

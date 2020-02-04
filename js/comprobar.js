@@ -7,7 +7,10 @@ function comprobar() {
         error.textContent = "Nombre vacio , por favor escriba un nombre";
         return false;
     }
+    if(errornombre) {
+        error.textContent = "Que el nombre ya esta duplicado, lee";
+        return false;
+    }
     
-    
-    return false;
+    return true;
 }
