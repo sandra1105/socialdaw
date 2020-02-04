@@ -11,6 +11,7 @@ fetch(URL_PATH + "/existeusuario/" + nombre.value)
             errornombre = true;
         }else {
             error.textContent = "";
+            errornombre = false;
         }
     })
 }

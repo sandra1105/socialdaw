@@ -254,4 +254,34 @@ class PruebaController extends Controller {
                 echo json_encode($array); 
             }
     }
+    function eliminarusuario($loginpersona) {
+        if($_SESSION["rol"] == 1) {
+            $Orm = new OrmSocialDaw;
+            global $URL_PATH;
+            $ficheros = $Orm->conseguirficheros($loginpersona);
+            $Orm->borrarUsuario($loginpersona);
+            foreach ($ficheros as $key) {
+                unlink("$URL_PATH/assets/img/" . $key);
+            }
+            header("Location: $URL_PATH/");
+        }else {
+            throw new Exception("No se puede eliminar usuario, no eres admin");
+            
+        }
+
+    }
+    function eliminarpost($id) {
+        if($_SESSION["rol"] == 1) {
+            $Orm = new OrmSocialDaw;
+            global $URL_PATH;
+            $ficheros = $Orm->obtenerpost($id);
+            $Orm->borrarpost($id);
+            var_dump("assets/img/" . $ficheros->foto);
+            unlink("assets/img/" . $ficheros->foto);
+            //header("Location: $URL_PATH/");
+        }else {
+            throw new Exception("No se puede eliminar usuario, no eres admin");
+            
+        }
+    }
 }

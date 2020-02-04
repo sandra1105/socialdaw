@@ -200,5 +200,37 @@ class OrmSocialDaw{
         $select= "select count(*) as 'numero' FROM `post` JOIN `sigue` ON post.usuario_login = sigue.usuario_login_seguido WHERE sigue.usuario_login_seguidor = ?";
         return $conn->queryOne($select,$params)["numero"];
     }
-    
+
+    function borrarUsuario($login) {
+        $conn=Klasto::getInstance();
+        $conn->startTransaction();
+        $params = [$login];
+        $posts = $conn->query("select id from post where usuario_login = ?",$params);
+        foreach ($posts as $key) {
+            $conn->execute("delete  from comenta where post_id= ?",[$key["id"]]);
+            $conn->execute("delete  from `like` where post_id = ?",[$key["id"]]);
+            $conn->execute("delete  from post where id = ?",[$key["id"]]);
+        }
+        $conn->execute("delete  from comenta where usuario_login = ?",$params);
+        $conn->execute("delete  from `like` where usuario_login = ?",$params);
+        $conn->execute("delete  from sigue where usuario_login_seguidor = ?",$params);
+        $conn->execute("delete  from sigue where usuario_login_seguido = ?",$params);
+        $conn->execute("delete  from usuario where login = ?",$params);
+        $conn->commit();
+    }
+    function borrarpost($id) {
+        $conn=Klasto::getInstance();
+        $conn->startTransaction();
+        $params = [$id];
+            $conn->execute("delete  from comenta where post_id= ?",$params);
+            $conn->execute("delete  from `like` where post_id = ?",$params);
+            $conn->execute("delete  from post where id = ?",$params);
+        $conn->commit();
+    }
+    function conseguirficheros($login) {
+        $conn=Klasto::getInstance();
+        $params = [$login];
+        $select= "select foto FROM post  WHERE usuario_login = ?";
+        return $conn->query($select,$params);
+    }
 }

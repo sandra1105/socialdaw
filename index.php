@@ -39,6 +39,10 @@ Macaw::get($URL_PATH . '/obtenerlike/(:any)', "controller\PruebaController@obten
 
 Macaw::get($URL_PATH . '/existeusuario/(:any)', "controller\PruebaController@existeusuario");
 
+Macaw::get($URL_PATH . '/eliminarusuario/(:any)', "controller\PruebaController@eliminarusuario");
+
+Macaw::get($URL_PATH . '/eliminarpost/(:any)', "controller\PruebaController@eliminarpost");
+
 // Captura de URL no definidas.
 Macaw::error(function() {
   (new \controller\ErrorController) -> gestionarNotFound();

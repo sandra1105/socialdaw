@@ -41,6 +41,9 @@
 							<?php }?>></i></a>
 						<span id="numerolike<?= $valor->id ?>"><?= $valor->num_like?></span>
 						<a href="<?=$URL_PATH?>/masinformacion/<?=$valor->id?>"><i class="fa fa-comments"></i></a><?= $valor->num_comentarios ?>
+						<?php if($_SESSION["rol"] == 1) { ?>
+						<a href="javascript:void(0)"  onclick="eliminarPost('<?=$valor->id?>')" id ="borrarusuario"><i class="fa fa-trash text-danger"></i></a>
+						<?php }?>
 					<?php }?>
 					<a class="btn btn-primary"role="button" href="<?=$URL_PATH?>/masinformacion/<?=$valor->id?>">Leer mas</a> 
 				</div>
@@ -75,5 +78,6 @@
 <div><h1 id="icono"><a class="nuevopost" href="<?=$URL_PATH?>/anadir">+</a></h1></div>
 	<?php	}?>
 	<script src="<?= $URL_PATH ?>/js/like.js"></script>
+	<script src="<?=$URL_PATH?>/js/borrar.js"></script>
 <?php Ti::endBlock()?>
 <?php Ti::endExtend()?>

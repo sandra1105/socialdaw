@@ -8,6 +8,9 @@
 #seguir {
     margin-left:80%;
 }
+#borrarusuario {
+    margin-left:80%;
+}
 <?php Ti::endBlock()?>
 <?php Ti::startBlock("contenido")?>
 <?php global $URL_PATH;?>
@@ -22,6 +25,10 @@
             <?php }else { ?>
                 <dt><a href="<?=$URL_PATH?>/seguir/<?=$login?>" id ="seguir" class="btn btn-primary linea"role="button">Seguir</a></dt>
         <?php } ?>
+        <?php if($_SESSION["rol"] == 1) {?>
+            <br>
+            <dt><a href="javascript:void(0)"  onclick="eliminarUsuario('<?=$login?>')" id ="borrarusuario" class="btn btn-danger linea"role="button">Borrar Persona</a></dt>
+        <?php }?>
     <?php } ?>
     </dl>
 </div>
@@ -41,5 +48,6 @@
 	</div>
 </div>
 <?php }?>
+<script src="<?=$URL_PATH?>/js/borrar.js"></script>
 <?php Ti::endBlock()?>
 <?php Ti::endExtend()?>
